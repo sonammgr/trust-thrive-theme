@@ -1,0 +1,130 @@
+import { Product } from "@/components/ProductCard";
+import product1 from "@/assets/product-1.jpg";
+import product2 from "@/assets/product-2.jpg";
+import product3 from "@/assets/product-3.jpg";
+import product4 from "@/assets/product-4.jpg";
+import product5 from "@/assets/product-5.jpg";
+import product6 from "@/assets/product-6.jpg";
+
+export const products: Product[] = [
+  {
+    id: "smart-water-bottle",
+    name: "Smart Temperature Display Water Bottle",
+    price: 34.99,
+    originalPrice: 49.99,
+    image: product1,
+    rating: 4.8,
+    reviewCount: 2847,
+    badge: "Best Seller",
+    inStock: true,
+    stockCount: 12,
+  },
+  {
+    id: "wireless-earbuds-pro",
+    name: "ProSound Wireless Noise-Canceling Earbuds",
+    price: 79.99,
+    originalPrice: 129.99,
+    image: product2,
+    rating: 4.7,
+    reviewCount: 1923,
+    badge: "Top Rated",
+    inStock: true,
+    stockCount: 28,
+  },
+  {
+    id: "massage-gun-mini",
+    name: "Deep Tissue Massage Gun - Compact Pro",
+    price: 89.99,
+    originalPrice: 149.99,
+    image: product3,
+    rating: 4.9,
+    reviewCount: 3456,
+    inStock: true,
+    stockCount: 4,
+  },
+  {
+    id: "smart-air-purifier",
+    name: "SmartAir HEPA Purifier with UV-C",
+    price: 149.99,
+    originalPrice: 199.99,
+    image: product4,
+    rating: 4.6,
+    reviewCount: 892,
+    inStock: true,
+    stockCount: 15,
+  },
+  {
+    id: "led-therapy-device",
+    name: "Red Light Therapy Wand - Wellness Pro",
+    price: 59.99,
+    originalPrice: 89.99,
+    image: product5,
+    rating: 4.5,
+    reviewCount: 567,
+    inStock: true,
+    stockCount: 22,
+  },
+  {
+    id: "smart-posture-corrector",
+    name: "Smart Posture Corrector with Vibration Alert",
+    price: 44.99,
+    originalPrice: 69.99,
+    image: product6,
+    rating: 4.4,
+    reviewCount: 1234,
+    badge: "New",
+    inStock: true,
+    stockCount: 8,
+  },
+];
+
+export const reviews = [
+  {
+    id: "1",
+    name: "Sarah M.",
+    rating: 5,
+    text: "Absolutely love the massage gun! Perfect for post-workout recovery. The quality is amazing for this price point. Shipped fast too!",
+    date: "December 10, 2024",
+    verified: true,
+  },
+  {
+    id: "2",
+    name: "James K.",
+    rating: 5,
+    text: "The air purifier has been a game changer for my allergies. Quiet operation and the app control is super convenient. Highly recommend!",
+    date: "December 8, 2024",
+    verified: true,
+  },
+  {
+    id: "3",
+    name: "Emily R.",
+    rating: 4,
+    text: "Smart water bottle keeps me hydrated throughout the day. Love the temperature display! Only wish it came in more colors.",
+    date: "December 5, 2024",
+    verified: true,
+  },
+  {
+    id: "4",
+    name: "Michael T.",
+    rating: 5,
+    text: "Best earbuds I've owned. Noise cancellation is incredible for the price. Battery life exceeds expectations. Will buy again!",
+    date: "December 3, 2024",
+    verified: true,
+  },
+  {
+    id: "5",
+    name: "Lisa P.",
+    rating: 5,
+    text: "The posture corrector actually works! Gentle vibration reminders help me maintain good posture while working from home.",
+    date: "November 28, 2024",
+    verified: true,
+  },
+  {
+    id: "6",
+    name: "David W.",
+    rating: 4,
+    text: "LED therapy device is helping with my skin. Easy to use and feels premium. Seeing results after just 2 weeks of use!",
+    date: "November 25, 2024",
+    verified: true,
+  },
+];
