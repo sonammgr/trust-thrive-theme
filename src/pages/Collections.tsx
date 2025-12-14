@@ -3,10 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import TrustBadges from "@/components/TrustBadges";
 import Footer from "@/components/Footer";
-import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+import ShopifyProductCard from "@/components/ShopifyProductCard";
+import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal, Grid3X3, LayoutGrid } from "lucide-react";
+import { SlidersHorizontal, Grid3X3, LayoutGrid, Loader2 } from "lucide-react";
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
@@ -16,34 +16,38 @@ const Collections = () => {
   const category = searchParams.get("category");
   const saleOnly = searchParams.get("sale") === "true";
 
-  const filteredProducts = useMemo(() => {
+  const { data: products, isLoading, error } = useShopifyProducts(20);
+
+  const sortedProducts = useMemo(() => {
+    if (!products) return [];
+    
     let result = [...products];
     
-    if (saleOnly) {
-      result = result.filter(p => p.originalPrice && p.originalPrice > p.price);
-    }
-    
-    // Sort
     switch (sortBy) {
       case "price-low":
-        result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => 
+          parseFloat(a.node.priceRange.minVariantPrice.amount) - 
+          parseFloat(b.node.priceRange.minVariantPrice.amount)
+        );
         break;
       case "price-high":
-        result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => 
+          parseFloat(b.node.priceRange.minVariantPrice.amount) - 
+          parseFloat(a.node.priceRange.minVariantPrice.amount)
+        );
         break;
-      case "rating":
-        result.sort((a, b) => b.rating - a.rating);
+      case "title-az":
+        result.sort((a, b) => a.node.title.localeCompare(b.node.title));
         break;
-      case "reviews":
-        result.sort((a, b) => b.reviewCount - a.reviewCount);
+      case "title-za":
+        result.sort((a, b) => b.node.title.localeCompare(a.node.title));
         break;
       default:
-        // Featured - keep original order
         break;
     }
     
     return result;
-  }, [sortBy, saleOnly]);
+  }, [products, sortBy]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -58,7 +62,7 @@ const Collections = () => {
               {category ? `${category.charAt(0).toUpperCase() + category.slice(1)} Collection` : saleOnly ? "Sale Items" : "All Products"}
             </h1>
             <p className="text-muted-foreground">
-              {filteredProducts.length} products curated for quality and value
+              {sortedProducts.length} products curated for quality and value
             </p>
           </div>
         </section>
@@ -78,8 +82,8 @@ const Collections = () => {
                   <option value="featured">Featured</option>
                   <option value="price-low">Price: Low to High</option>
                   <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Highest Rated</option>
-                  <option value="reviews">Most Reviews</option>
+                  <option value="title-az">Name: A to Z</option>
+                  <option value="title-za">Name: Z to A</option>
                 </select>
               </div>
 
@@ -102,14 +106,38 @@ const Collections = () => {
               </div>
             </div>
 
+            {/* Loading State */}
+            {isLoading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Failed to load products. Please try again.</p>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!isLoading && !error && sortedProducts.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground mb-4">No products found.</p>
+                <p className="text-sm text-muted-foreground">Create products by telling me what you want to sell!</p>
+              </div>
+            )}
+
             {/* Product Grid */}
-            <div className={`grid gap-4 md:gap-6 ${gridCols === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
-              {filteredProducts.map((product, index) => (
-                <div key={product.id} style={{ animationDelay: `${index * 0.05}s` }}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
+            {sortedProducts.length > 0 && (
+              <div className={`grid gap-4 md:gap-6 ${gridCols === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
+                {sortedProducts.map((product, index) => (
+                  <div key={product.node.id} style={{ animationDelay: `${index * 0.05}s` }}>
+                    <ShopifyProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
