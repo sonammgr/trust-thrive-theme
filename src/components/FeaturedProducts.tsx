@@ -5,7 +5,7 @@ import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 import ShopifyProductCard from "./ShopifyProductCard";
 
 const FeaturedProducts = () => {
-  const { data: products, isLoading, error } = useShopifyProducts(6);
+  const { data: products, isLoading, error } = useShopifyProducts(50);
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -13,10 +13,10 @@ const FeaturedProducts = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Best Sellers
+            Our Products
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our most loved products, handpicked for quality and value. Limited selection, maximum impact.
+            Browse our complete collection of quality products, handpicked for value and satisfaction.
           </p>
         </div>
 
@@ -42,11 +42,11 @@ const FeaturedProducts = () => {
           </div>
         )}
 
-        {/* Product Grid - 6 products max for Hick's Law */}
+        {/* Product Grid */}
         {products && products.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
             {products.map((product, index) => (
-              <div key={product.node.id} style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={product.node.id} style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}>
                 <ShopifyProductCard product={product} />
               </div>
             ))}
