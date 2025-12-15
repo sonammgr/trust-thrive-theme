@@ -56,8 +56,8 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
   };
 
   return (
-    <div className="group relative bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 animate-fade-up">
-      <Link to={`/product/${node.handle}`} className="block relative aspect-square overflow-hidden bg-secondary/30">
+    <div className="group relative bg-card rounded-lg overflow-hidden border border-border shadow-sm hover:shadow-md transition-all duration-300 animate-fade-up">
+      <Link to={`/product/${node.handle}`} className="block relative aspect-square overflow-hidden bg-secondary">
         {image ? (
           <img
             src={image.url}
@@ -65,7 +65,7 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-secondary">
+          <div className="w-full h-full flex items-center justify-center bg-muted">
             <span className="text-muted-foreground">No image</span>
           </div>
         )}
@@ -77,9 +77,9 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
         )}
       </Link>
 
-      <div className="p-4">
+      <div className="p-4 bg-card">
         <Link to={`/product/${node.handle}`}>
-          <h3 className="font-medium text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          <h3 className="font-medium text-card-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
             {node.title}
           </h3>
         </Link>
@@ -89,7 +89,7 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
         </div>
 
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg font-bold text-foreground">
+          <span className="text-lg font-bold text-card-foreground">
             {currency === "USD" ? "$" : currency} {price.toFixed(2)}
           </span>
           {compareAtPrice && compareAtPrice > price && (

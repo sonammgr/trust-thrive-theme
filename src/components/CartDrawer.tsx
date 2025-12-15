@@ -77,7 +77,7 @@ const CartDrawer = () => {
                 <div className="space-y-4">
                   {items.map((item) => (
                     <div key={item.variantId} className="flex gap-4 p-2 border-b border-border pb-4">
-                      <div className="w-16 h-16 bg-secondary/20 rounded-md overflow-hidden flex-shrink-0">
+                      <div className="w-16 h-16 bg-secondary rounded-md overflow-hidden flex-shrink-0">
                         {item.product.node.images?.edges?.[0]?.node && (
                           <img
                             src={item.product.node.images.edges[0].node.url}
