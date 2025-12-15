@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import TrustBadges from "@/components/TrustBadges";
 import Footer from "@/components/Footer";
 import ShopifyProductCard from "@/components/ShopifyProductCard";
+import ProductSearch from "@/components/ProductSearch";
 import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Grid3X3, LayoutGrid, Loader2 } from "lucide-react";
@@ -12,17 +13,26 @@ const Collections = () => {
   const [searchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState("featured");
   const [gridCols, setGridCols] = useState<2 | 3>(3);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const category = searchParams.get("category");
   const saleOnly = searchParams.get("sale") === "true";
 
   const { data: products, isLoading, error } = useShopifyProducts(50);
 
-  const sortedProducts = useMemo(() => {
+  const filteredAndSortedProducts = useMemo(() => {
     if (!products) return [];
     
     let result = [...products];
     
+    // Filter by search query
+    if (searchQuery.trim()) {
+      result = result.filter((product) =>
+        product.node.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Sort
     switch (sortBy) {
       case "price-low":
         result.sort((a, b) => 
@@ -47,7 +57,7 @@ const Collections = () => {
     }
     
     return result;
-  }, [products, sortBy]);
+  }, [products, sortBy, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -61,9 +71,10 @@ const Collections = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
               {category ? `${category.charAt(0).toUpperCase() + category.slice(1)} Collection` : saleOnly ? "Sale Items" : "All Products"}
             </h1>
-            <p className="text-muted-foreground">
-              {sortedProducts.length} products curated for quality and value
+            <p className="text-muted-foreground mb-6">
+              {filteredAndSortedProducts.length} products curated for quality and value
             </p>
+            <ProductSearch value={searchQuery} onChange={setSearchQuery} />
           </div>
         </section>
 
@@ -121,17 +132,21 @@ const Collections = () => {
             )}
 
             {/* Empty State */}
-            {!isLoading && !error && sortedProducts.length === 0 && (
+            {!isLoading && !error && filteredAndSortedProducts.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">No products found.</p>
-                <p className="text-sm text-muted-foreground">Create products by telling me what you want to sell!</p>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery ? `No products found for "${searchQuery}"` : "No products found."}
+                </p>
+                {!searchQuery && (
+                  <p className="text-sm text-muted-foreground">Create products by telling me what you want to sell!</p>
+                )}
               </div>
             )}
 
             {/* Product Grid */}
-            {sortedProducts.length > 0 && (
+            {filteredAndSortedProducts.length > 0 && (
               <div className={`grid gap-4 md:gap-6 ${gridCols === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
-                {sortedProducts.map((product, index) => (
+                {filteredAndSortedProducts.map((product, index) => (
                   <div key={product.node.id} style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}>
                     <ShopifyProductCard product={product} />
                   </div>
