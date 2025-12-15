@@ -16,7 +16,7 @@ const Collections = () => {
   const category = searchParams.get("category");
   const saleOnly = searchParams.get("sale") === "true";
 
-  const { data: products, isLoading, error } = useShopifyProducts(20);
+  const { data: products, isLoading, error } = useShopifyProducts(50);
 
   const sortedProducts = useMemo(() => {
     if (!products) return [];
@@ -130,9 +130,9 @@ const Collections = () => {
 
             {/* Product Grid */}
             {sortedProducts.length > 0 && (
-              <div className={`grid gap-4 md:gap-6 ${gridCols === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}>
+              <div className={`grid gap-4 md:gap-6 ${gridCols === 2 ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
                 {sortedProducts.map((product, index) => (
-                  <div key={product.node.id} style={{ animationDelay: `${index * 0.05}s` }}>
+                  <div key={product.node.id} style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}>
                     <ShopifyProductCard product={product} />
                   </div>
                 ))}
