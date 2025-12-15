@@ -107,7 +107,6 @@ const STOREFRONT_PRODUCTS_QUERY = `
                   currencyCode
                 }
                 availableForSale
-                quantityAvailable
                 selectedOptions {
                   name
                   value
@@ -166,7 +165,6 @@ const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
               currencyCode
             }
             availableForSale
-            quantityAvailable
             selectedOptions {
               name
               value
