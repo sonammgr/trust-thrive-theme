@@ -4,6 +4,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
 import StarRating from "./StarRating";
 import { toast } from "sonner";
+import { cleanProductTitle } from "@/lib/product-utils";
 
 interface ShopifyProductCardProps {
   product: ShopifyProduct;
@@ -47,7 +48,7 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
     });
 
     toast.success("Added to cart", {
-      description: node.title,
+      description: cleanProductTitle(node.title),
       action: {
         label: "View Cart",
         onClick: () => setOpen(true),
@@ -80,7 +81,7 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
       <div className="p-4 bg-card">
         <Link to={`/product/${node.handle}`}>
           <h3 className="font-medium text-card-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-            {node.title}
+            {cleanProductTitle(node.title)}
           </h3>
         </Link>
 

@@ -10,6 +10,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Truck, RotateCcw, Minus, Plus, Play, ChevronLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { cleanProductTitle } from "@/lib/product-utils";
 
 const ProductPage = () => {
   const { handle } = useParams();
@@ -83,7 +84,7 @@ const ProductPage = () => {
     });
 
     toast.success("Added to cart", {
-      description: `${product.title} × ${quantity}`,
+      description: `${cleanProductTitle(product.title)} × ${quantity}`,
       action: {
         label: "View Cart",
         onClick: () => setCartOpen(true),
@@ -157,7 +158,7 @@ const ProductPage = () => {
             {/* Product Details */}
             <div className="space-y-6">
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                {product.title}
+                {cleanProductTitle(product.title)}
               </h1>
 
               <div className="flex items-center gap-4">
@@ -224,7 +225,7 @@ const ProductPage = () => {
 
               {/* Description */}
               <p className="text-muted-foreground leading-relaxed">
-                {product.description || `Experience premium quality with our ${product.title}. Designed for modern living, this product combines cutting-edge technology with elegant design.`}
+                {product.description || `Experience premium quality with our ${cleanProductTitle(product.title)}. Designed for modern living, this product combines cutting-edge technology with elegant design.`}
               </p>
 
               {/* Quantity & Add to Cart */}
