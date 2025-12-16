@@ -5,19 +5,32 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 import ShopifyProductCard from "./ShopifyProductCard";
 import ProductSearch from "./ProductSearch";
+import CategoryFilter from "./CategoryFilter";
+import { extractCategories, filterByCategory } from "@/lib/product-utils";
 
 const FeaturedProducts = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { data: products, isLoading, error } = useShopifyProducts(50);
+
+  const categories = useMemo(() => {
+    if (!products) return [];
+    return extractCategories(products);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (!searchQuery.trim()) return products;
     
-    return products.filter((product) =>
-      product.node.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [products, searchQuery]);
+    let result = filterByCategory(products, selectedCategory);
+    
+    if (searchQuery.trim()) {
+      result = result.filter((product) =>
+        product.node.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return result;
+  }, [products, searchQuery, selectedCategory]);
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -30,7 +43,14 @@ const FeaturedProducts = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
             Browse our complete collection of quality products, handpicked for value and satisfaction.
           </p>
-          <ProductSearch value={searchQuery} onChange={setSearchQuery} />
+          <div className="space-y-4">
+            <ProductSearch value={searchQuery} onChange={setSearchQuery} />
+            <CategoryFilter 
+              categories={categories} 
+              selectedCategory={selectedCategory} 
+              onCategoryChange={setSelectedCategory} 
+            />
+          </div>
         </div>
 
         {/* Loading State */}
@@ -51,9 +71,9 @@ const FeaturedProducts = () => {
         {!isLoading && !error && filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">
-              {searchQuery ? `No products found for "${searchQuery}"` : "No products found."}
+              {searchQuery || selectedCategory ? `No products found${selectedCategory ? ` in "${selectedCategory}"` : ""}${searchQuery ? ` for "${searchQuery}"` : ""}` : "No products found."}
             </p>
-            {!searchQuery && (
+            {!searchQuery && !selectedCategory && (
               <p className="text-sm text-muted-foreground">Create products by telling me what you want to sell!</p>
             )}
           </div>

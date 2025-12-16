@@ -5,7 +5,9 @@ import TrustBadges from "@/components/TrustBadges";
 import Footer from "@/components/Footer";
 import ShopifyProductCard from "@/components/ShopifyProductCard";
 import ProductSearch from "@/components/ProductSearch";
+import CategoryFilter from "@/components/CategoryFilter";
 import { useShopifyProducts } from "@/hooks/useShopifyProducts";
+import { extractCategories, filterByCategory } from "@/lib/product-utils";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Grid3X3, LayoutGrid, Loader2 } from "lucide-react";
 
@@ -14,16 +16,22 @@ const Collections = () => {
   const [sortBy, setSortBy] = useState("featured");
   const [gridCols, setGridCols] = useState<2 | 3>(3);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const category = searchParams.get("category");
   const saleOnly = searchParams.get("sale") === "true";
 
   const { data: products, isLoading, error } = useShopifyProducts(50);
 
+  const categories = useMemo(() => {
+    if (!products) return [];
+    return extractCategories(products);
+  }, [products]);
+
   const filteredAndSortedProducts = useMemo(() => {
     if (!products) return [];
     
-    let result = [...products];
+    let result = filterByCategory(products, selectedCategory);
     
     // Filter by search query
     if (searchQuery.trim()) {
@@ -57,7 +65,7 @@ const Collections = () => {
     }
     
     return result;
-  }, [products, sortBy, searchQuery]);
+  }, [products, sortBy, searchQuery, selectedCategory]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -74,7 +82,14 @@ const Collections = () => {
             <p className="text-muted-foreground mb-6">
               {filteredAndSortedProducts.length} products curated for quality and value
             </p>
-            <ProductSearch value={searchQuery} onChange={setSearchQuery} />
+            <div className="space-y-4">
+              <ProductSearch value={searchQuery} onChange={setSearchQuery} />
+              <CategoryFilter 
+                categories={categories} 
+                selectedCategory={selectedCategory} 
+                onCategoryChange={setSelectedCategory} 
+              />
+            </div>
           </div>
         </section>
 
@@ -135,9 +150,9 @@ const Collections = () => {
             {!isLoading && !error && filteredAndSortedProducts.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground mb-4">
-                  {searchQuery ? `No products found for "${searchQuery}"` : "No products found."}
+                  {searchQuery || selectedCategory ? `No products found${selectedCategory ? ` in "${selectedCategory}"` : ""}${searchQuery ? ` for "${searchQuery}"` : ""}` : "No products found."}
                 </p>
-                {!searchQuery && (
+                {!searchQuery && !selectedCategory && (
                   <p className="text-sm text-muted-foreground">Create products by telling me what you want to sell!</p>
                 )}
               </div>

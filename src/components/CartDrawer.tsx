@@ -10,6 +10,7 @@ import {
 import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { cleanProductTitle } from "@/lib/product-utils";
 
 const CartDrawer = () => {
   const { 
@@ -81,14 +82,14 @@ const CartDrawer = () => {
                         {item.product.node.images?.edges?.[0]?.node && (
                           <img
                             src={item.product.node.images.edges[0].node.url}
-                            alt={item.product.node.title}
+                            alt={cleanProductTitle(item.product.node.title)}
                             className="w-full h-full object-cover"
                           />
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{item.product.node.title}</h4>
+                        <h4 className="font-medium text-sm truncate">{cleanProductTitle(item.product.node.title)}</h4>
                         {item.variantTitle !== "Default Title" && (
                           <p className="text-xs text-muted-foreground">
                             {item.selectedOptions.map(opt => opt.value).join(' / ')}
